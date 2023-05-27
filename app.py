@@ -10,8 +10,15 @@ def connection():
     cursor = cnxn.cursor()
     cursor.execute("SELECT * FROM test;")
     
+
+    html = "<table>"
     row = cursor.fetchone() 
     while row:
+        html += "<tr>"
+        for item in row:
+            html += "<td>" + item + "</td>"
+        html += "</tr>"
         print (row) 
         row = cursor.fetchone()
-    return "Connection to database successful"
+    html += "</table>"
+    return html
