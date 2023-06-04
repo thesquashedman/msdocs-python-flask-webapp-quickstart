@@ -27,9 +27,13 @@
                   <button type="submit" name="searchbutton" value="Year Published" class="btn btn-primary btn-lg px-4 gap-3">Year Published</button>
                   <button type="submit" name="searchbutton" value="Publisher" class="btn btn-primary btn-lg px-4 gap-3">Publisher</button>
                   <button type="submit" name="searchbutton" value="Language" class="btn btn-primary btn-lg px-4 gap-3">Language</button>
+                  <button type="submit" name="searchbutton" value="Author" class="btn btn-primary btn-lg px-4 gap-3">Author</button>
                 </div>     
             </div>
         </form>
+        <div>
+          <h2>{{search}}</h2> 
+        </div>
         <table class = "table">
           <tr class = "table__header">
             {% for cell in header %}
@@ -37,6 +41,23 @@
             {% endfor %}
           </tr>
         {% for row in ptable %}
+          <tr class = "table__row">
+            {% for cell in row %}
+              <td class = "table__Cell"> {{cell}} </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+        </table>
+        <div>
+          <h2>{{locations}}</h2> 
+        </div>
+        <table class = "table">
+          <tr class = "table__header">
+            {% for cell in header2 %}
+              <th class = "table__Cell"> {{cell}} </td>
+            {% endfor %}
+          </tr>
+        {% for row in ptable2 %}
           <tr class = "table__row">
             {% for cell in row %}
               <td class = "table__Cell"> {{cell}} </td>
