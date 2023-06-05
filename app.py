@@ -1,6 +1,7 @@
 from flask import (Flask, redirect, render_template, request,
                    send_from_directory, url_for)
 import mysql.connector
+import os
 app = Flask(__name__)
 
 global cnxn
@@ -295,7 +296,9 @@ def hello():
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
         search = "Searching for books with Language with '" + name + "'" 
-        locations = "Locations for books with Language with '" + name + "'" 
+        locations = "Locations for books with Language with '" + name + "'"
+
+
         
     return render_template('index.html', ptable = tabledata, header = header, ptable2 = tabledata2, header2 = header2, search = search, locations = locations)
     """
@@ -306,6 +309,11 @@ def hello():
        print('Request for hello page received with no name or blank name -- redirecting')
        return redirect(url_for('index'))
     """
+
+@app.route('/librarian')
+def librarian():
+    # Code to handle the librarian page
+    return render_template('librarian.html')
 
 
 if __name__ == '__main__':
