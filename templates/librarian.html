@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <title>Dewey Decimators Library Database</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Home</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/Librarian">Librarian</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main>
+
+    <div class="px-4 py-3 my-2 text-center">
+        <img class="d-block mx-auto mb-4" src="{{ url_for('static', filename='images/DD_Logo.png') }}" alt="Dewey Decimator logo" style="max-width: 500px; height: auto;">
+        <h1 class="display-6 fw-bold text-primary">Library Database</h1>
+        <h2 class="display-10 fw-bold text-black">Librarian Resources</h2>
+
+        <!-- Search form -->
+        <form action="/search" method="get" class="mb-3" style="max-width: 350px; margin: 0 auto;">
+            <div class="mb-3">
+                <h3>Overdue books by customer:</h3>
+            </div>
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchQuery" placeholder="Customer Library card number" name="searchQuery">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+
+        <!-- Add book form -->
+        <form action="/submit-book" method="post">
+            <div class="mb-3">
+                <h3>Add a Book to the Library</h3>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control me-3" id="ISBN" placeholder="ISBN" name="ISBN" required>
+                        <input type="text" class="form-control me-3" id="Title" placeholder="Title" name="Title" required>
+                        <input type="text" class="form-control me-3" id="Year_published" placeholder="Year Published" name="Year_published" required>
+                        <input type="text" class="form-control me-3" id="Genre" placeholder="Genre" name="Genre" required>
+                        <input type="text" class="form-control me-3" id="Publisher" placeholder="Publisher" name="Publisher" required>
+                        <input type="text" class="form-control me-3" id="Language" placeholder="Language" name="Language" required>
+                        <input type="text" class="form-control me-3" id="Author_ID" placeholder="Author ID" name="Author_ID" required>
+                        <button class="btn btn-primary" type="submit">Add book to library</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+</main>
+</body>
+</html>

@@ -1,7 +1,11 @@
 from flask import (Flask, redirect, render_template, request,
                    send_from_directory, url_for)
 import mysql.connector
+
+import os
+
 from mysql.connector import errorcode
+
 app = Flask(__name__)
 
 global cnxn
@@ -332,6 +336,7 @@ def hello():
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
         search = "Searching for books with Language with '" + name + "'" 
+
         locations = "Locations for books with Language with '" + name + "'" 
     elif request.form['searchbutton'] == 'Author':
         name = request.form.get('name')
@@ -382,6 +387,7 @@ def hello():
         header2.append("Copies Available")
         search = "Searching for books with Author with '" + name + "'" 
         locations = "Locations for books with Author with '" + name + "'" 
+
     return render_template('index.html', ptable = tabledata, header = header, ptable2 = tabledata2, header2 = header2, search = search, locations = locations)
     """
     if name:
@@ -453,6 +459,11 @@ def checkout():
 
     
 
+
+@app.route('/librarian')
+def librarian():
+    # Code to handle the librarian page
+    return render_template('librarian.html')
 if __name__ == '__main__':
    app.run()
 
