@@ -62,7 +62,7 @@ def hello():
         #cursor2 = cnxn.cursor()
         try:
             cursor.execute(
-                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available "
+                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available, MIN(C.return_date) as next_return_date "
                 "FROM "
                 "(SELECT B.*, address, zip_code, copies_owned, shelf FROM (SELECT * FROM BOOK WHERE title like '%"+ name +"%') as B left join LIBRARY_OWNS_BOOKS as L on B.isbn = L.isbn) as L "
                 "LEFT JOIN "
@@ -85,6 +85,7 @@ def hello():
         header2.append("Copies Owned")
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
+        header2.append("Next Return Date (yy-mm-dd)")
         search = "Searching for books with '" + name + "' in Title" 
         locations = "Locations for books with '" + name + "' in Title" 
     elif request.form['searchbutton'] == 'genre':
@@ -112,7 +113,7 @@ def hello():
         
         try:
             cursor.execute(
-                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available "
+                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available, MIN(C.return_date) as next_return_date "
                 "FROM "
                 "(SELECT B.*, address, zip_code, copies_owned, shelf FROM (SELECT * FROM BOOK WHERE genre = '"+ name +"') as B left join LIBRARY_OWNS_BOOKS as L on B.isbn = L.isbn) as L "
                 "LEFT JOIN "
@@ -135,6 +136,7 @@ def hello():
         header2.append("Copies Owned")
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
+        header2.append("Next Return Date (yy-mm-dd)")
         search = "Searching for books with genre '" + name + "'" 
         locations = "Locations for books with genre '" + name + "'" 
     elif request.form['searchbutton'] == 'ISBN':
@@ -162,7 +164,7 @@ def hello():
         
         try:
             cursor.execute(
-                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available "
+                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available, MIN(C.return_date) as next_return_date "
                 "FROM "
                 "(SELECT B.*, address, zip_code, copies_owned, shelf FROM (SELECT * FROM BOOK WHERE ISBN = '"+ name +"') as B left join LIBRARY_OWNS_BOOKS as L on B.isbn = L.isbn) as L "
                 "LEFT JOIN "
@@ -185,6 +187,7 @@ def hello():
         header2.append("Copies Owned")
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
+        header2.append("Next Return Date (yy-mm-dd)")
         search = "Searching for books with ISBN '" + name + "'" 
         locations = "Locations for books with ISBN '" + name + "'" 
     elif request.form['searchbutton'] == 'Year Published':
@@ -212,7 +215,7 @@ def hello():
         
         try:
             cursor.execute(
-                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available "
+                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available, MIN(C.return_date) as next_return_date "
                 "FROM "
                 "(SELECT B.*, address, zip_code, copies_owned, shelf FROM (SELECT * FROM BOOK WHERE Year_Published = "+ name +") as B left join LIBRARY_OWNS_BOOKS as L on B.isbn = L.isbn) as L "
                 "LEFT JOIN "
@@ -235,6 +238,7 @@ def hello():
         header2.append("Copies Owned")
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
+        header2.append("Next Return Date (yy-mm-dd)")
         search = "Searching for books with Publish Year '" + name + "'" 
         locations = "Locations for books with Publish Year '" + name + "'" 
     elif request.form['searchbutton'] == 'Publisher':
@@ -262,7 +266,7 @@ def hello():
         
         try:
             cursor.execute(
-                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available "
+                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available, MIN(C.return_date) as next_return_date "
                 "FROM "
                 "(SELECT B.*, address, zip_code, copies_owned, shelf FROM (SELECT * FROM BOOK WHERE Publisher LIKE '%"+ name +"%') as B left join LIBRARY_OWNS_BOOKS as L on B.isbn = L.isbn) as L "
                 "LEFT JOIN "
@@ -285,6 +289,7 @@ def hello():
         header2.append("Copies Owned")
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
+        header2.append("Next Return Date (yy-mm-dd)")
         search = "Searching for books with Publisher with'" + name + "'" 
         locations = "Locations for books with Publisher with'" + name + "'" 
     elif request.form['searchbutton'] == 'Language':
@@ -312,7 +317,7 @@ def hello():
 
         try:
             cursor.execute(
-                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available "
+                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available, MIN(C.return_date) as next_return_date "
                 "FROM "
                 "(SELECT B.*, address, zip_code, copies_owned, shelf FROM (SELECT * FROM BOOK WHERE Language LIKE '%"+ name +"%') as B left join LIBRARY_OWNS_BOOKS as L on B.isbn = L.isbn) as L "
                 "LEFT JOIN "
@@ -335,6 +340,7 @@ def hello():
         header2.append("Copies Owned")
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
+        header2.append("Next Return Date (yy-mm-dd)")
         search = "Searching for books with Language with '" + name + "'" 
 
         locations = "Locations for books with Language with '" + name + "'" 
@@ -362,7 +368,7 @@ def hello():
 
         try:
             cursor.execute(
-                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available "
+                "SELECT L.ISBN, L.Title, L.address, Z.city, Z.state, L.zip_code, L.shelf, L.copies_owned, COUNT(C.book_isbn) as copies_checked_out, L.copies_owned - COUNT(C.book_isbn) as copies_available, MIN(C.return_date) as next_return_date "
                 "FROM "
                 "(SELECT B.*, address, zip_code, copies_owned, shelf FROM (SELECT B.*, Author_name FROM BOOK as B, Author as A WHERE Author_name like '%"+ name +"%' AND B.author_ID = A.author_ID) as B left join LIBRARY_OWNS_BOOKS as L on B.isbn = L.isbn) as L "
                 "LEFT JOIN "
@@ -385,6 +391,7 @@ def hello():
         header2.append("Copies Owned")
         header2.append("Copies Checked Out")
         header2.append("Copies Available")
+        header2.append("Next Return Date (yy-mm-dd)")
         search = "Searching for books with Author with '" + name + "'" 
         locations = "Locations for books with Author with '" + name + "'" 
 
