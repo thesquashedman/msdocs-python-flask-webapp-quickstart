@@ -523,13 +523,14 @@ def searchOverdue():
 
     try:
         cursor.execute(
+            ##HAD TO HARD CODE DATE, 'NOW' ISNT WORKING
             "SELECT BOOK.title, CHECKED.Name, CHECKED.Return_date "
             "FROM BOOK, ( "
             "SELECT * "
             "FROM CUSTOMER, BOOKS_CHECKED_OUT AS BCO "
             "WHERE CUSTOMER.Library_card_number = BCO.Customer_library_card) AS CHECKED "
             "WHERE BOOK.ISBN = CHECKED.Book_ISBN "
-            "AND CHECKED.Return_date < DATE('now') "
+            "AND CHECKED.Return_date < DATE('2023-06-07') "
             + Search)
 
 
