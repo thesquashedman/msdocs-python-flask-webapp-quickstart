@@ -1,57 +1,93 @@
 <!doctype html>
-<html>
 <head>
     <title>Dewey Decimators Library Database</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
+<html>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="/">Home</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/librarian">Librarian</a>
-                </li>
-            </ul>
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Home</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/librarian">Librarian</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/checkout">Checkout</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 <main>
 
     <div class="px-4 py-3 my-2 text-center">
         <img class="d-block mx-auto mb-4" src="{{ url_for('static', filename='images/DD_Logo.png') }}" alt="Dewey Decimator logo" style="max-width: 500px; height: auto;">
         <h1 class="display-6 fw-bold text-primary">Library Database</h1>
         <h2 class="display-10 fw-bold text-black">Librarian Resources</h2>
+        <br>
 
         <!-- Search form -->
-        <form action="/search" method="get" class="mb-3" style="max-width: 350px; margin: 0 auto;">
-            <div class="mb-3">
-                <h3>Overdue books by customer:</h3>
-            </div>
-            <div class="input-group">
-                <input type="text" class="form-control" id="searchQuery" placeholder="Customer Library card number" name="searchQuery">
-                <button class="btn btn-primary" type="submit">Search</button>
+        <form action="/librarianOverdue" method="post" class="mb-3" style="max-width: 600px; margin: 0 auto;">
+            <div class="mb-3 d-flex align-items-center">
+                <h3 style="margin-right: 10px; white-space: nowrap;">Overdue books by customer:</h3>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchQuery" placeholder="Customer Library card number" name="searchQuery" style="max-width: 256px;">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
             </div>
         </form>
+        <div>
+            <br>
+            <h3>{{ error1 }}</h3>
+        </div>
+
+        <!-- table for overdue books-->
+        <table class = "table">
+          <tr class = "table__header">
+            {% for cell in header %}
+              <th class = "table__Cell"> {{cell}} </td>
+            {% endfor %}
+          </tr>
+        {% for row in tabledata %}
+          <tr class = "table__row">
+            {% for cell in row %}
+              <td class = "table__Cell"> {{cell}} </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+        </table>
+
 
         <!-- Add book form -->
-        <form action="/submit-book" method="post">
+        <form action="/librarian" method="post">
             <div class="mb-3">
                 <h3>Add a Book to the Library</h3>
             </div>
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control me-3" id="ISBN" placeholder="ISBN" name="ISBN" required>
-                        <input type="text" class="form-control me-3" id="Title" placeholder="Title" name="Title" required>
-                        <input type="text" class="form-control me-3" id="Year_published" placeholder="Year Published" name="Year_published" required>
-                        <input type="text" class="form-control me-3" id="Genre" placeholder="Genre" name="Genre" required>
-                        <input type="text" class="form-control me-3" id="Publisher" placeholder="Publisher" name="Publisher" required>
-                        <input type="text" class="form-control me-3" id="Language" placeholder="Language" name="Language" required>
-                        <input type="text" class="form-control me-3" id="Author_ID" placeholder="Author ID" name="Author_ID" required>
+                        <input type="text" class="form-control me-3" id="ISBN" placeholder="ISBN" name="ISBN" style="max-width: 256px;" required>
+                        <input type="text" class="form-control me-3" id="Title" placeholder="Title" name="Title" style="max-width: 256px;" required>
+                        <input type="text" class="form-control me-3" id="Year_published" placeholder="Year Published" name="Year_published" style="max-width: 256px;" required>
+                        <select class="form-control me-3" id="Genre" name="Genre" style="max-width: 256px;" required>
+                            <option value="">Genre</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Nonfiction">Nonfiction</option>
+                            <option value="Drama">Drama</option>
+                            <option value="Folktale">Folktale</option>
+                            <option value="Poetry">Poetry</option>
+                        </select>
+                        <input type="text" class="form-control me-3" id="Publisher" placeholder="Publisher" name="Publisher" style="max-width: 256px;" required>
+                        <input type="text" class="form-control me-3" id="Language" placeholder="Language" name="Language" style="max-width: 256px;" required>
+                        <input type="text" class="form-control me-3" id="Author_ID" placeholder="Author ID" name="Author_ID" style="max-width: 256px;" required>
+                    </div>
+                    <div class="text-center">
                         <button class="btn btn-primary" type="submit">Add book to library</button>
+                        <h3>{{ error2 }}</h3>
                     </div>
                 </div>
             </div>
