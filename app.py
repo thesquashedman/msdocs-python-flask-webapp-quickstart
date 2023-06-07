@@ -486,38 +486,135 @@ def checkout():
 
 
 @app.route('/librarian')
-def librarian():
-    # Code to handle the librarian page
+def librarianStart():
+    print('Request for librarian page received')
     return render_template('librarian.html')
+
+@app.route('/librarianOverdue', methods=['POST'])
+def searchOverdue():
+    global cursor
+    tabledata = []
+    header = []
+    errorMessage = ""
+
+
+
+    Search = request.form.get('searchQuery')
+    if len(Search) > 0:
+        try:
+            cursor.execute(
+                "SELECT CUSTOMER.Library_card_number "
+                "FROM CUSTOMER "
+                "WHERE CUSTOMER.Library_card_number = " + Search)
+
+            tempTable = cursor.fetchall()
+
+            if len(tempTable) == 0:
+                errorMessage = "No Customer found"
+                return render_template('librarian.html', error1=errorMessage)
+
+        except mysql.connector.Error as err:
+            print(err.msg)
+            errorMessage = "ERROR: Bad Inputs"
+
+        Search = "AND Library_card_number = " + Search
+    else:
+        Search = ""
+
+    try:
+        cursor.execute(
+            ##HAD TO HARD CODE DATE, 'NOW' ISNT WORKING
+            "SELECT BOOK.title, CHECKED.Name, CHECKED.Return_date "
+            "FROM BOOK, ( "
+            "SELECT * "
+            "FROM CUSTOMER, BOOKS_CHECKED_OUT AS BCO "
+            "WHERE CUSTOMER.Library_card_number = BCO.Customer_library_card) AS CHECKED "
+            "WHERE BOOK.ISBN = CHECKED.Book_ISBN "
+            "AND CHECKED.Return_date < DATE('2023-06-07') "
+            + Search)
+
+
+        tabledata = cursor.fetchall()
+        header.append("Title")
+        header.append("Customer name")
+        header.append("Original return date")
+
+    except mysql.connector.Error as err:
+        print(err.msg)
+        errorMessage = "Real Bad Error"
+    if len(tabledata) == 0:
+        errorMessage = "No overdue books"
+        return render_template('librarian.html', error1 = errorMessage)
+
+
+
+    return render_template('librarian.html', error1 = errorMessage, header = header, tabledata = tabledata)
+
+
+@app.route('/librarian', methods=['POST'])
+def addBook():
+    global cnxn
+    global cursor
+    tempTable = None
+    errorMessage = ""
+
+    ISBN = request.form.get('ISBN')
+    Title = request.form.get('Title')
+    Year_published = request.form.get('Year_published')
+    Genre = request.form.get('Genre')
+    Publisher = request.form.get('Publisher')
+    Language = request.form.get('Language')
+    Author_ID = request.form.get('Author_ID')
+
+    try:
+        cursor.execute(
+            "SELECT BOOK.ISBN "
+            "FROM BOOK "
+            "WHERE BOOK.ISBN = " + ISBN)
+
+        tempTable = cursor.fetchall()
+
+        if len(tempTable) > 0:
+            errorMessage = "ERROR: Book already exists!"
+            return render_template('librarian.html', error2 =errorMessage)
+
+    except mysql.connector.Error as err:
+        print(err.msg)
+        errorMessage = "ERROR: Bad Inputs"
+    try:
+        cursor.execute(
+            "SELECT AUTHOR.Author_ID "
+            "FROM AUTHOR "
+            "WHERE  AUTHOR.Author_ID= " + Author_ID)
+
+        tempTable = cursor.fetchall()
+
+        if len(tempTable) == 0:
+            errorMessage = "Author does not yet exist!"
+            return render_template('librarian.html', error2 =errorMessage)
+
+    except mysql.connector.Error as err:
+        print(err.msg)
+        errorMessage = "ERROR: Bad Inputs"
+
+    try:
+        print(Title)
+        cursor.execute(
+            "INSERT INTO BOOK (ISBN, Title, Year_published, Genre, Publisher, Language, Author_ID) VALUES ('" + ISBN +"', '" + Title + "', " + Year_published + ", '" + Genre + "', '" + Publisher + "', '" + Language + "', '" + Author_ID + "');"
+        )
+        cnxn.commit()
+        errorMessage = "Success!"
+
+    except mysql.connector.Error as err:
+        print(err.msg)
+        errorMessage = "ERROR: Bad Inputs"
+
+
+
+    return render_template('librarian.html', error2 =errorMessage)
+
+
+
 if __name__ == '__main__':
    app.run()
 
-
-
-
-"""
-from flask import Flask
-import mysql.connector
-
-app = Flask(__name__)
-
-@app.route('/')
-def connection():
-    
-    cnxn = mysql.connector.connect(user="thesquashedman", password="#cooldude2", host="pavelserver.mysql.database.azure.com", port=3306, database="library")
-    cursor = cnxn.cursor()
-    cursor.execute("SELECT * FROM book;")
-    
-
-    html = "<table>"
-    row = cursor.fetchone() 
-    while row:
-        html += "<tr>"
-        for item in row:
-            html += "<td>" + str(item) + "</td>"
-        html += "</tr>"
-        print (row) 
-        row = cursor.fetchone()
-    html += "</table>"
-    return html
-"""
