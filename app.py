@@ -412,6 +412,8 @@ def checkoutStart():
 def checkout():
     global cnxn
     global cursor
+    tabledata = []
+    header = []
     temp = None
     errorMessage = ""
     try:
@@ -446,23 +448,39 @@ def checkout():
         except mysql.connector.Error as err:
             print(err.msg)
             errorMessage = "Bad Inputs"
-        if(len(tempTable) != 1):
+        if(tempTable != None and len(tempTable) != 1):
             errorMessage = "Book at address not found"
         if(tempTable != None and len(tempTable) == 1):
             if(int(''.join(map(str, tempTable[0]))) <= 0):
-                errorMessage = "All copies checked out"
+                errorMessage = "Checkout Failed, All copies checked out"
             else:
-
+                success = True
                 try:
                     print("INSERT INTO BOOKS_CHECKED_OUT (Reference_ID, Customer_library_card, Book_ISBN, Address, Zip_code, Return_date) VALUES (" + str(checkoutid) + ", " + customer + ", '" + isbn + "', '" + address + "', " + zip + ", DATE_ADD(now(), INTERVAL 7 DAY));")
                     cursor.execute(
                         "INSERT INTO BOOKS_CHECKED_OUT (Reference_ID, Customer_library_card, Book_ISBN, Address, Zip_code, Return_date) VALUES (" + str(checkoutid) + ", " + customer + ", '" + isbn + "', '" + address + "', " + zip + ", DATE_ADD(now(), INTERVAL 7 DAY));")
                     cnxn.commit()
+                    errorMessage = "checkout successful"
                 except mysql.connector.Error as err:
                     print(err.msg)
                     errorMessage = "Customer Not Found"
+                    success = False
+                if(success == True):
+                    try:
+                        cursor.execute(
+                            "Select Book_ISBN, Address, Zip_code, return_date FROM BOOKS_CHECKED_OUT WHERE Customer_library_card = '" + customer + "';")
+                        tabledata = cursor.fetchall()
+                    except mysql.connector.Error as err:
+                        print(err.msg)
+                    header.append("ISBN")
+                    header.append("Address")
+                    header.append("Zip")
+                    header.append("Return Date (yy-mm-dd)")
+                    
+                
+                    
 
-    return render_template('checkout.html', error = errorMessage)
+    return render_template('checkout.html', error = errorMessage, ptable = tabledata, header = header)
 
     
 
